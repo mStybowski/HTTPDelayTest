@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    input{
+        padding: 5px 15px;
+        width: 280px;
+        height: 40px;
+    }
+    button{
+        background-color: #98ea29;
+        border: 2px solid green;
+        border-radius: 10px;
+        width: 280px;
+        height: 44px;
+        font-weight: bold;
+        font-size: 15px;
+        color: #484747;
+        margin: 10px 0;
+        cursor: pointer;
+        outline:none;
+    }
+    #wrapper{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    #startSending{
+        background-color: #f18787;
+        border: 2px solid darkred;
+    }
+
+</style>
+
+<body>
+    <div id="wrapper">
+        <button id="sendOne" onclick="sendXHRRequest()">SEND XHR REQUEST</button>
+        <input type="text" id="periodInput" placeholder="period in ms">
+        <button id="startSending" onclick="startSendingData()">Start sending XHR REQUEST</button>
+    </div>
+<script>
+
+
+    let timer = null;
+
+    let counter = 0;
+
+    function startSendingData(){
+        let period = document.getElementById("periodInput").value;
+        timer = setInterval(sendXHRRequest, period);
+    }
+
+    function sendXHRRequest(){
+
+        let beginValue = Date.now();
+
+        var req = new XMLHttpRequest();
+
+        req.open('GET', 'http://localhost:8888/test', true);
+        req.setRequestHeader("myHeader", beginValue);
+        req.onreadystatechange = function (aEvt) {
+            if (req.readyState == 4) {
+                if(req.status == 200){
+                    let Delay = Date.now() - Number(req.responseText);
+                    console.log("Wygenerowane opóźnienie: " + Delay);
+
+                }
+                else
+                    console.log("ERROR");
+            }
+        };
+
+        req.send(null);
+        counter ++;
+
+        console.log("Wiadomosc nr. " + counter)
+        if(counter >= 100)
+            clearInterval(timer);
+    }
+</script>
+</body>
+</html>
