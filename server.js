@@ -8,31 +8,22 @@ let port = 8888;
 
 app.use(cors())
 
-function saveToCSV(array){
-
-
-
+function generateCSV(array){
     let myArrayOfStrings = array.split(',');
-    console.log(myArrayOfStrings);
-
     let arrayOfValues = myArrayOfStrings.map(function(x) {
         return {value:parseInt(x)}
     });
-
-    console.log(arrayOfValues);
-
+    
     const csvWriter = createCsvWriter({
         path: 'out.csv',
         header: [
-            {id: 'value', title: 'Value'}
+            {id: 'value', title: 'Time [ms]'}
         ]
     });
-
-
+    
     csvWriter
         .writeRecords(arrayOfValues)
         .then(()=> console.log('The CSV file was written successfully'));
-
 }
 
 app.get("/test", (req, res) =>{
@@ -41,8 +32,7 @@ app.get("/test", (req, res) =>{
     console.log("HEADER: " + req.header("myHeader"));
 
     if(req.header("delays")){
-        console.log(req.header("delays"))
-        saveToCSV(req.header("delays"))
+        generateCSV(req.header("delays"))
     }
 })
 
